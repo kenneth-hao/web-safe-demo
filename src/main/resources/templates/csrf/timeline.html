@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Web 安全演示 - CSRF</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+        .micro_blog {
+            margin-left: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>微博列表</h3>
+    <div th:each="timeline : ${timelines}">
+        <div>
+            <p th:text="${timeline.username}"></p>
+            <p th:text="${timeline.microBlog}" class="micro_blog"><span></span></p>
+        </div>
+    </div>
+
+    <div style="margin-top: 68px;"></div>
+    <div>
+        <form class="microBlogForm">
+            <input name="microBlog" value="" />
+            <button type="button" class="tweet">推文</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('button.tweet').click(function() {
+        $.post("/csrf/micro_blog", { microBlog: $('input[name=microBlog]').val() }, function(msg) {
+            if (msg == "ok") {
+                location.reload();
+            }
+        });
+    });
+</script>
+</body>
+</html>

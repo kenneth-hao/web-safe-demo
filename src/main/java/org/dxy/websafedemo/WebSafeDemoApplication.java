@@ -9,4 +9,5 @@ public class WebSafeDemoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebSafeDemoApplication.class, args);
 	}
+
 }

