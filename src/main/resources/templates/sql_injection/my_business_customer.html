@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Web 安全演示 - SQL 注入</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+        .micro_blog {
+            margin-left: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Web 安全演示 - SQL 注入</h2>
+
+
+    <h3>我的客户列表</h3>
+
+    <hr />
+
+    <form method="get" action="">
+        <input name="city" th:value="${city}" placeholder="请输入客户城市" />
+        <button>检索</button>
+    </form>
+
+    <table class="table" style="margin-top: 20px;">
+        <thead>
+            <th scope="col">#</th>
+            <th scope="col">用户</th>
+            <th scope="col">客户名称</th>
+            <th scope="col">客户手机号</th>
+            <th scope="col">客户所在城市</th>
+        </thead>
+        <tbody th:each="customer : ${customers}">
+            <th th:text="${customer.id}"></th>
+            <td th:text="${customer.username}"></td>
+            <td th:text="${customer.customer}"></td>
+            <td th:text="${customer.mobilePhone}"></td>
+            <td th:text="${customer.city}"></td>
+        </tbody>
+    </table>
+
+    <p style="color: #DDD">秘密指令：北京' or 1=1 --</p>
+</div>
+
+</body>
+</html>
